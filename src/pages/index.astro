@@ -3,7 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
 
-const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
 
 const last_posts = posts.slice(0, 3);
 ---
@@ -15,14 +17,27 @@ const last_posts = posts.slice(0, 3);
     <div class="text-3xl py-3 font-bold">Platform | DevOps engineer</div>
     <div class="py-2">
       <text class="text-lg">
-        I'm Krishan, and I specialize in creating seamless online experiences. With a passion for solution architecting and development, 
-        Through this blog, I'll provide insights into the world of DevOps, focusing on optimizing workflows, automating processes, and achieving efficiency. 
-        Along the way, I'll share my experiences in mentoring others and delivering technical training sessions. 
+        I'm Krishan, and I specialize in creating seamless online experiences.
+        With a passion for solution architecting and development, Through this
+        blog, I'll provide insights into the world of DevOps, focusing on
+        optimizing workflows, automating processes, and achieving efficiency.
+        Along the way, I'll share my experiences in mentoring others and
+        delivering technical training sessions.
       </text>
     </div>
     <div class="mt-8">
-      <a class="btn" href="https://www.linkedin.com/in/krishan-thisera/" target="_blank"> Let's connect!</a>
-      <a href="https://github.com/krishanthisera" target="_blank" class="btn btn-outline ml-5">
+      <a
+        class="btn"
+        href="https://www.linkedin.com/in/krishan-thisera/"
+        target="_blank"
+      >
+        Let's connect!</a
+      >
+      <a
+        href="https://github.com/krishanthisera"
+        target="_blank"
+        class="btn btn-outline ml-5"
+      >
         Sometimes I code on GitHub 🍻
       </a>
     </div>
@@ -44,7 +59,7 @@ const last_posts = posts.slice(0, 3);
     title="Why should you consider to adopt Service Mesh"
     img="https://bizkt.imgix.net/projects/istio.png"
     desc="This is a brief overview of why you should consider adopting Service Mesh with your existing Kubernetes cluster."
-    url="https://www.linkedin.com/pulse/why-should-you-consider-adopt-service-mesh-krishan-thisera?trk=public_profile_article_view"    
+    url="https://www.linkedin.com/pulse/why-should-you-consider-adopt-service-mesh-krishan-thisera?trk=public_profile_article_view"
   />
   <div class="divider my-0"></div>
   <div>
