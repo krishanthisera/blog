@@ -14,9 +14,9 @@ The source code for this article is available [here](https://github.com/krishant
 
 # Before you begin  
 
-I wanted to empathize with the following, If you come from an agile background (who is not eh?) say these are our user stories
+I wanted to emphasize the following, If you come from an agile background (who ain't eh?) say these are our user stories
 
-- We want a website to host our static content
+- We want the website to host our static content
   - The content should be securely stored in an S3 bucket (no public access to the bucket)
   - The traffic to the site should be secured (HTTPS)
   - Leverage CloudFront to deliver the static content from the bucket
@@ -30,10 +30,11 @@ I wanted to empathize with the following, If you come from an agile background (
 
 Before we start we shall set up our terraform environment. In Terraform it is vital to maintain your state file secure. I personally prefer Terraform Cloud as the configuration is straightforward and we don’t need to worry about CI/CD (GitOps-like) setup.  
 
-First, you will need to create Terraform cloud account [here](https://app.terraform.io/public/signup/account) (it’s free). Then create a project and set up a workflow, at this point, you would need to have a GitHub account (or from any VCS provider) to maintain your infrastructure code. I am not going to show how this, as this is very straightforward.
+First, you will need to a create Terraform cloud account [here](https://app.terraform.io/public/signup/account) (it’s free). Then create a project and set up a workflow, at this point, you would need to have a GitHub account (or from any VCS provider) to maintain your infrastructure code. I am not going to show-how this, as this is very straightforward.
 
-When you have set up your workflow, you should be able to see a webhook configured in your GitHub account. If you are using a VCS other than GitHub you would need to set this webhook manually.
-You can follow [this](https://developer.hashicorp.com/terraform/language/settings/backends/remote) to setup the backend,
+If you have set up your Terraform workspace correctly, you should be able to see a webhook configured in your GitHub account. If you are using a VCS other than GitHub you would need to set this webhook manually.  
+
+You can follow [this](https://developer.hashicorp.com/terraform/language/settings/backends/remote#example-configurations) to set up the backend.
 
 If you refer to the GitHub repo, [config.remote.tfbackend](https://github.com/krishanthisera/aws-static-hosting/blob/main/config.remote.tfbackend) describe my remote backend configuration. In this case, I am using a CLI input to configure the backend.
 
@@ -44,6 +45,7 @@ terraform init -backend-config=config.remote.tfbackend
 Let's have a quick peek into our provider's configuration.
 
 ```hcl
+# provider.tf
 terraform {
   required_version = "~> 1.5.0"
   required_providers {
@@ -60,7 +62,7 @@ provider "aws" {
 }
 ```
 
-Now as we have set up our remote backend and conquered the provider configuration we can start writing our code.
+As we have set up our remote backend and conquered the provider configuration we can start writing our code.
 
 # S3 Buckets
 
@@ -135,7 +137,7 @@ There are a couple of things to note here,
 - **S3 bucket website configuration:** here we set the paths to our index document and error document. You can even pull this path out for and defined them as a variable.
 - **S3 bucket CORS configuration:** CORS configuration is a pretty generic one for our scenario.
 - **Block public access to the bucket:** we don’t want our bucket objects to be publicly available.
-- **Set Bucket Object ownership:** To avoid complications, we set the object ownership to bucket owner
+- **Set Bucket Object ownership:** To avoid complications, we set the object ownership to bucket owner.
 - **S3 bucket policy:** here we are referring to the S3 bucket policy, which has been specified in data.tf.
 
 Let’s take a look at the policy document. See [data.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/data.tf)
@@ -198,7 +200,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
 
 Here we are specifying two different statements.
 
-1. To let the pipeline deployer list the bucket
+1. To let the pipeline deployer user to list the bucket
 2. CloudFront service to read the S3 bucket content
 
 It is important to note that we will be using Origin Access Control (OAC) instead of legacy OAI (Origin Access Identity) to provide access to S3 bucket content to the CloudFront.
@@ -217,7 +219,7 @@ See [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/pr
 
 # [CloudFront](https://github.com/krishanthisera/aws-static-hosting/blob/main/cloudfront.tf)
 
-_For this article, we shall keep the CloudFront configuration to a minimum. Le’s discover more when we configure the Lambda at edge functions._
+_For this article, we shall keep the CloudFront configuration to a minimum. Let’s discover more when we configure the Lambda at edge functions._
 
 ## aws_cloudfront_distribution
 
@@ -225,7 +227,7 @@ Here we specify the origin configurations, as most of them are self-explanatory 
 
 ### SSL configuration
 
-Here my certificate is sort of a “Bring your own certificate”, but I have put together a configuration for Email or DNS challenge validation.
+If we refer to the repository, my certificate set up is sort of a “Bring your own certificate”, but I have put together a configuration for Email or DNS challenge validation.
 
 Please refer to [acm.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/acm.tf). For Email validation use the following.
 
@@ -247,7 +249,7 @@ resource "aws_acm_certificate" "ssl_certificate" {
 
 ### Function association
 
-If you see [src/astro.js](https://github.com/krishanthisera/aws-static-hosting/blob/main/src/astro.js), I have a little edge function there and it is self-explanatory. A little confession, my blog is using the Astro framework, so I grab the code function from the documentation [here](https://docs.astro.build/en/guides/deploy/aws/#cloudfront-functions-setup).
+If you see [src/astro.js](https://github.com/krishanthisera/aws-static-hosting/blob/main/src/astro.js), I have a little edge function there and it is self-explanatory. A little confession, my blog is using the Astro framework, so I grab the code to the edge function from the documentation [here](https://docs.astro.build/en/guides/deploy/aws/#cloudfront-functions-setup).
 
 ```js
 // src/astro.js
@@ -281,10 +283,11 @@ resource "aws_cloudfront_function" "astro_default_edge_function" {
 
 # [IAM](https://github.com/krishanthisera/aws-static-hosting/blob/main/iam.tf)
 
-During the deployment,
+During the deployment, the deployer user would need to:
 
-1. Push the build artifacts to the S3 bucket
-2. Do the CloudFront invalidation
+1. Push build artifacts to the S3 bucket
+2. Do the CloudFront invalidation  
+
 If you skim through the file, you would get a good understanding of how this has been set up.
 
 ```hcl
@@ -336,10 +339,10 @@ resource "aws_iam_group_membership" "deployment_group_membership" {
 
 We shall have two policy documents for each use case mentioned earlier,
 
-1. IAM policy for Cloudfront to invalidate the cache
+1. IAM policy for CloudFront to invalidate the cache
 
 ```hcl
-# data.tf: IAM policy for cloudfront to invalidate cache
+# data.tf: IAM policy for CloudFront to invalidate cache
 data "aws_iam_policy_document" "allow_cloudfront_invalidate" {
   statement {
     sid    = "AllowCloudFrontInvalidation"
@@ -391,7 +394,7 @@ As they are pretty generic, I am not going dig deep, but [here](https://github.c
 
 # Variables
 
-Here there are a couple of variables I have been using, In my case, I use [terraform.tfvars](https://github.com/krishanthisera/aws-static-hosting/blob/main/terraform.tfvars) file to set the bucket name and the domain name. As I am not super comfortable with sharing my AWS account ID, I copied the certificate ARN from a previously created certificate and save it against  `TF_VAR_ssl_certificate_arn`.  You can configure these variables in Terraform Cloud.  
+There are a couple of variables I have been using, In my case, I use [terraform.tfvars](https://github.com/krishanthisera/aws-static-hosting/blob/main/terraform.tfvars) file to set the bucket name and the domain name. As I am not super comfortable with sharing my AWS account ID, I have copied the certificate ARN from a previously created certificate and save it against  `TF_VAR_ssl_certificate_arn`.  You can configure these variables in Terraform Cloud.  
 
 ⚠️ **Don’t forget to set your AWS access key pair.**
 
