@@ -87,5 +87,7 @@ __Traffic Mirroring:__ You can easily mirror the traffic from a particular servi
 Lastly, for the time being, ISTIO document has some vague areas where those sections are not that clear. For example, ISTIO ingress with SSL certificates.
 The following GIT repository will walk you through ISTIO implementation with Cert-Manager.  
 
+[ISTIO with cert-manager](https://github.com/krishanthisera/istio-certman-poc)
+
 Note that, this is a POC that I have designed and only describes the steps that you may follow to implement ISTIO with Cert-Manager.
 It is heavily recommended to follow the official documentation for both ISTIO and Cert-Manger for better understanding.
