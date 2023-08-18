@@ -338,29 +338,37 @@ There are many tools out there to assist with this, but my main focus here isn't
 
 #### Prerendering: The Business logic
 
-Well, this is the most important section.  
+Let's dive into the most crucial part of our discussion.
 
-Now our goal is to pass a static HTML file, which was renderend from our site. So let me explain the code using the workflow, which was described earlier.
+Imagine the scenario: our website has dynamic content, but search engines prefer static HTML for indexing. Our goal is to serve static HTML, rendered from our dynamic site, to these search engines.
 
-Let me bring our old diagram back,
+To visualize our workflow, refer to the previously mentioned diagram:
 
 ![crawler requests]( https://bizkt.imgix.net/posts/edge-functions/prerender-crawler-requests.png )
 
-So when a request is received to our CloudFront Distribution, we need to check if the request is coming from a crawler, or actual user.  
+The process kicks off when our CloudFront Distribution receives a request. We need to distinguish whether this request is from a search engine crawler or a regular user.
 
-So here we will leverage an lambda at edge functions set a header so later we can check this during the CloudFront request flow we can  filter these requests and do the needful.
+##### Step 1: Filtering Requests with Lambda@Edge
 
-Type script implementation for this is so simple
+We'll employ a Lambda@Edge function to introduce a header, allowing us to later distinguish and appropriately handle requests during the CloudFront request flow.
+
+Type script handler implementation for this is not complex
 
 ```ts
-// edge-functions/packages/prerender-check/src/index.ts
+// edge-functions/packages/filter-function/src/index.ts
 export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFrontRequest> => {
   const request = event.Records[0].cf.request
+
+  // Check if the request:
+  // 1. Does not match any of the recognized file extensions
+  // 2. Is from a recognized bot user agent
+  // 3. Does not already have an x-prerender header
   if (
     !IS_FILE.test(request.uri) &&
     IS_BOT.test(request.headers["user-agent"][0].value) &&
     !request.headers["x-prerender"]
   ) {
+    // Set x-request-prerender header to inform origin-request Lambda function
     request.headers["x-request-prerender"] = [
       {
         key: "x-request-prerender",
@@ -368,6 +376,7 @@ export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFront
       },
     ]
 
+    // Set x-prerender-host header to the host of the request
     request.headers["x-prerender-host"] = [
       {
         key: "X-Prerender-Host",
@@ -380,19 +389,23 @@ export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFront
 }
 ```
 
-Once we filter the requests from crawlers, we can request prerender service to render the web page. All we have to do is pass the webpage addressed requested, with the token from the prerender service.  
+##### Step 2: Requesting the Prerender Service
+
+Having filtered requests coming from crawlers, our next step is to ask the prerender service to render the appropriate web page for us. This is a straightforward process: provide the webpage address and a token from the prerender service.
 
 ```ts
-// edge-functions/packages/prerender/src/index.ts
 export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFrontResponse | CloudFrontRequest> => {
   const request = event.Records[0].cf.request
 
+  // If the request has the x-request-prerender header, it means the viewer-request function determined it should be prerendered
   if (request.headers["x-request-prerender"]) {
-
+    // CloudFront alters requests for the root path to the default root object, /index.html.
+    // However, when prerendering the homepage, this behavior is not desired.
     if (request.uri === `${PATH_PREFIX}/index.html`) {
       request.uri = `${PATH_PREFIX}/`
     }
 
+    // Modify the request's origin to be the prerender service
     request.origin = {
       custom: {
         domainName: PRERENDER_URL,
@@ -413,11 +426,9 @@ export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFront
       },
     }
   } else {
-
     if (request.uri.endsWith("/")) {
       request.uri += "index.html"
-    }
-    else if (!request.uri.includes(".")) {
+    } else if (!request.uri.includes(".")) {
       request.uri += "/index.html"
     }
   }
@@ -426,16 +437,66 @@ export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFront
 }
 ```
 
-Here we (our lambda at edge function) ask prerender service to prerender the website. Now, if you can remember our workflow,  prerender service will send a brand new request to our CloudFront distribution and render the webpage and pass the HTML page.
+Once invoked, the Lambda@Edge function requests the prerender service to render our website. The prerender service, in turn, sends a new request to our CloudFront distribution, captures the rendered webpage, and returns it as a static HTML page.
 
-Alright, what happen if the web page is not available. In most cases, we will have a default 404 page, so the regardless of the status code we have setup, prerender allow us to map a status code. All you have to do is inject the error code into you error page meta data.  
+###### Handling Errors
+
+What happens if a page isn't available? Typically, we would present a default 404 page. However, the prerender service offers a cool solution. It allows us to specify a status code by embedding it within the error page's metadata:
 
 `<meta name="prerender-status-code" content="404">`
 
 You can read more about this [here](https://docs.prerender.io/docs/11-best-practices).  
 
-Now if we refer back to our diagram, pay attention to number 5, prerender will send the static HTML with a status code.  
+##### Step 3: Responding with Static HTML
 
-So our third and last lambda edge function would format the reponse to the Crawler, and additionally I am setting the cache control header so we can control our cached responces.
+Once the prerender service completes its task and sends back the static HTML, our third Lambda@Edge function formats the response for the search engine crawler.
 
-It is vital to note that if you are follow along, I have
+As part of this process, we also set cache control headers to dictate how the returned responses should be cached.
+
+```ts
+// edge-functions/packages/response-handler/src/index.ts
+
+// Create an Axios client instance for HTTP requests.
+// This instance is defined outside the Lambda function for reuse between calls.
+const instance = axios.create({
+  timeout: 1000, // Set request timeout
+  maxRedirects: 0, // Disable following redirects
+  validateStatus: (status) => status === 200, // Only consider HTTP 200 as a valid response
+  httpsAgent: new https.Agent({ keepAlive: true }), // Use a keep-alive HTTPS agent
+})
+
+export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFrontResponse> => {
+  const response = event.Records[0].cf.response
+
+  // If the x-prerender-requestid header is present, set cache-control headers.
+  if (response.headers[`${cacheKey}`]) {
+    response.headers["Cache-Control"] = [
+      {
+        key: "Cache-Control",
+        value: `max-age=${cacheMaxAge}`,
+      },
+    ]
+  }
+  // If the response status isn't 200 (OK), fetch and set a custom error page.
+  else if (response.status !== "200") {
+    try {
+      const res = await instance.get(errorPageUrl)
+      response.body = res.data
+      response.headers["content-type"] = [
+        {
+          key: "Content-Type",
+          value: "text/html",
+        },
+      ]
+      // Remove any pre-existing content-length headers as they might contain values from the origin.
+      delete response.headers["content-length"]
+    } catch (error) {
+      // If fetching the custom error page fails, return the original response.
+      return response
+    }
+  }
+  return response
+}
+```
+
+It's crucial to understand that regardless of the origin/source (S3 or Prerender), if the response isn't a 200 status code, we provide our own custom error page. This page is fetched on-the-fly by Axios, which sends a request to our website's 404 page. If you are following along with my previous article, I have get rid of the custom error page configuration from the CloudFront. See [here](https://github.com/krishanthisera/aws-static-hosting/commit/be22273ccbf8c3180e04108b705415d93a16d2fb?diff=unified)
