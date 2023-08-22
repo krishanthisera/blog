@@ -186,22 +186,23 @@ We'll go deeper into the build process later. For the time being, let's assume o
  locals {
   edge_functions = [
     {
-      name = "prerender"
-      path = "${var.edge_function_path}/packages/prerender/build/index.js"
+      name = "prerender-proxy"
+      path = "${var.edge_function_path}/packages/prerender-proxy/build/index.js"
       handler = "index.handler"
     },
     {
-      name = "prerender-check"
-      path = "${var.edge_function_path}/packages/prerender-check/build/index.js"
+      name = "filter-function"
+      path = "${var.edge_function_path}/packages/filter-function/build/index.js"
       handler = "index.handler"
     },
     {
-      name = "cache-control"
-      path = "${var.edge_function_path}/packages/cache-control/build/index.js"
+      name = "response-handler"
+      path = "${var.edge_function_path}/packages/response-handler/build/index.js"
       handler = "index.handler"
     }
   ]
 }
+
  ```
 
 Here, I have defined a function by its name, specify its path, and indicate the handler.
