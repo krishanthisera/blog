@@ -1,5 +1,5 @@
 ---
-title: "AWS CloudFront edge functions"
+title: "AWS Static Hosting - Part 02: CloudFront Edge Functions"
 description: "In this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure."
 pubDate: "Jan 12 2023"
 heroImage: 'https://bizkt.imgix.net/posts/static-hosting/tf-aws.jpg'
@@ -291,17 +291,17 @@ resource "aws_cloudfront_distribution" "blog_distribution" {
 
     lambda_function_association {
       event_type   = "origin-request"
-      lambda_arn   = module.edge-functions.function_arns["prerender"]
-    }
-
-    lambda_function_association {
-      event_type   = "viewer-request"
-      lambda_arn   = module.edge-functions.function_arns["prerender-check"]
+      lambda_arn   = module.edge-functions.function_arns["prerender-proxy"]
     }
 
     lambda_function_association {
       event_type   = "origin-response"
-      lambda_arn   = module.edge-functions.function_arns["cache-control"]
+      lambda_arn   = module.edge-functions.function_arns["response-handler"]
+    }
+
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = module.edge-functions.function_arns["filter-function"]
     }
 
     forwarded_values {
@@ -344,11 +344,11 @@ Imagine the scenario: our website has dynamic content, but search engines prefer
 
 To visualize our workflow, refer to the previously mentioned diagram:
 
-![crawler requests]( https://bizkt.imgix.net/posts/edge-functions/prerender-crawler-requests.png )
+![crawler requests]( https://bizkt.imgix.net/posts/edge-functions/edgefunction-naming.png )
 
 The process kicks off when our CloudFront Distribution receives a request. We need to distinguish whether this request is from a search engine crawler or a regular user.
 
-##### Step 1: Filtering Requests with Lambda@Edge
+##### Step 1: Filtering Requests with Lambda@Edge | Filter Function
 
 We'll employ a Lambda@Edge function to introduce a header, allowing us to later distinguish and appropriately handle requests during the CloudFront request flow.
 
@@ -389,7 +389,7 @@ export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFront
 }
 ```
 
-##### Step 2: Requesting the Prerender Service
+##### Step 2: Requesting the Prerender Service | Prerender Proxy
 
 Having filtered requests coming from crawlers, our next step is to ask the prerender service to render the appropriate web page for us. This is a straightforward process: provide the webpage address and a token from the prerender service.
 
@@ -447,7 +447,7 @@ What happens if a page isn't available? Typically, we would present a default 40
 
 You can read more about this [here](https://docs.prerender.io/docs/11-best-practices).  
 
-##### Step 3: Responding with Static HTML
+##### Step 3: Responding with Static HTML | Response Handler
 
 Once the prerender service completes its task and sends back the static HTML, our third Lambda@Edge function formats the response for the search engine crawler.
 
@@ -500,3 +500,7 @@ export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFron
 ```
 
 It's crucial to understand that regardless of the origin/source (S3 or Prerender), if the response isn't a 200 status code, we provide our own custom error page. This page is fetched on-the-fly by Axios, which sends a request to our website's 404 page. If you are following along with my previous article, I have get rid of the custom error page configuration from the CloudFront. See [here](https://github.com/krishanthisera/aws-static-hosting/commit/be22273ccbf8c3180e04108b705415d93a16d2fb?diff=unified)
+
+## Wrapping it UP
+
+Wrapping up, we've explored how to use AWS CloudFront edge functions and S3 for our static hosting needs.  Our main goal? Boosting our site's SEO prowess. We broke down how web crawlers work, comparing it to the usual browser requests. Digging deeper, we uncovered the foundation of our solution. In short, this article offers a roadmap for those wanting to optimize their static sites using AWS tools.

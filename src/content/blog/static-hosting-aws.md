@@ -1,5 +1,5 @@
 ---
-title: "Host a static website in AWS using CloudFront, S3 and Terraform"
+title: "AWS Static Hosting - Part 01: CloudFront, S3 and Terraform"
 description: "In this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure."
 pubDate: "Jan 12 2023"
 heroImage: 'https://bizkt.imgix.net/posts/static-hosting/tf-aws.jpg'
