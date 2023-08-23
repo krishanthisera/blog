@@ -22,9 +22,9 @@ By providing a pre-rendered HTML version of the page to web crawlers, websites c
 
 As we are clear now what is Prerendering, we shall conquer what solution we going to use.  
 
-There are more than hand full of solutions that we can use in this case, in fact, you should be able to come up with your own solution using your favorite programming language. But here we use, [Prerender.io](https://docs.Prerender.io/) as our solution.  
+There are more than hand full of solutions that we can use in this case, in fact, you should be able to come up with your own solution using your favorite programming language. But here we use, [prerender.io](https://docs.prerender.io/) as our solution.  
 
-You can host it on your own infrastructure if you wish, you can follow the document [here](https://github.com/Prerender/Prerender).
+You can host it on your own infrastructure if you wish, you can follow the document [here](https://github.com/prerender/prerender).
 
 For this article, I am going to use their cloud offering, which has a free tier.
 
@@ -61,14 +61,14 @@ Alright, back to the original solution discussion.
 
 ## Ordinary Browser requests
 
-![browser requests]( https://bizkt.imgix.net/posts/edge-functions/Prerender-browser-requests.drawio.png )
+![browser requests]( https://bizkt.imgix.net/posts/edge-functions/prerender-browser-requests.drawio.png )
 
 ## Crawlers and Prerender request
 
 Let's discuss what happens to the requests from crawlers.
 Let's assume that the particular request has never been cached in Prerender.
 
-![crawler requests]( https://bizkt.imgix.net/posts/edge-functions/Prerender-crawler-requests.png )
+![crawler requests]( https://bizkt.imgix.net/posts/edge-functions/prerender-crawler-requests.png )
 
 1. Request from a crawler hit the CloudFront distribution
    - CloudFront verify that it is a crawler, and it is not from Prerender  
@@ -85,7 +85,7 @@ Let's take a brief look at error handling. Suppose a request is made for a page 
 
 To address this Prerender offers a very cool solution 💡. You can embed the error code into your HTML using meta tags, allowing Prerender to detect and relay it back. In other words, you can map a HTTP status code using HTML meta tags.
 
-For more information, see [here.](https://docs.Prerender.io/docs/status-codes)
+For more information, see [here.](https://docs.prerender.io/docs/status-codes)
 
 We will discuss this more with an example code later in this article.  
 
@@ -189,8 +189,8 @@ We'll discuss more about the build process later. For the time being, let's assu
  locals {
   edge_functions = [
     {
-      name = "Prerender-proxy"
-      path = "${var.edge_function_path}/packages/Prerender-proxy/build/index.js"
+      name = "prerender-proxy"
+      path = "${var.edge_function_path}/packages/prerender-proxy/build/index.js"
       handler = "index.handler"
     },
     {
@@ -295,7 +295,7 @@ resource "aws_cloudfront_distribution" "blog_distribution" {
 
     lambda_function_association {
       event_type   = "origin-request"
-      lambda_arn   = module.edge-functions.function_arns["Prerender-proxy"]
+      lambda_arn   = module.edge-functions.function_arns["prerender-proxy"]
     }
 
     lambda_function_association {
@@ -309,7 +309,7 @@ resource "aws_cloudfront_distribution" "blog_distribution" {
     }
 
     forwarded_values {
-      headers      = ["X-Request-Prerender", "X-Prerender-Host"]
+      headers      = ["x-request-prerender", "x-prerender-host"]
       query_string = false
 
       cookies {
@@ -479,7 +479,7 @@ What happens if the page isn't available? Typically, we would present a default 
 
 `<meta name="prerender-status-code" content="404">`
 
-You can read more about this [here](https://docs.Prerender.io/docs/11-best-practices).  
+You can read more about this [here](https://docs.prerender.io/docs/11-best-practices).  
 
 ##### Step 3: Responding with Static HTML | Response Handler
 
