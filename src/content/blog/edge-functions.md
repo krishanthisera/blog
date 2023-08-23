@@ -2,7 +2,7 @@
 title: "AWS Static Hosting - Part 02: CloudFront Edge Functions"
 description: "In this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure."
 pubDate: "Jan 12 2023"
-heroImage: 'https://bizkt.imgix.net/posts/static-hosting/tf-aws.jpg'
+heroImage: 'https://bizkt.imgix.net/posts/edge-functions/edge-functions-banner.png'
 badge: "NEW"
 ---
 
