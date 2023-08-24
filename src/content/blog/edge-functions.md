@@ -1,6 +1,6 @@
 ---
 title: "AWS Static Hosting - Part 02: CloudFront Edge Functions"
-description: "In this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure."
+description: "In this article, we will focus on how we can leverage Lambda@Edge functions to to make our site SEO-friendly."
 pubDate: "Jan 12 2023"
 heroImage: 'https://bizkt.imgix.net/posts/edge-functions/edge-functions-banner.png'
 badge: "NEW"
