@@ -10,9 +10,9 @@ Depending on your requirement, There are many ways to host a website in a cloud 
 
 I am planning to discuss the scenario using two articles. In this article,  we will focus primarily on infrastructure setup, and the second article would be dedicated to enhancing SEO, using Lambda at Edge functions.
 
-The source code for this article is available [here](https://github.com/krishanthisera/aws-static-hosting)
+The source code for this article is available [here](https://github.com/krishanthisera/aws-static-hosting/tree/aws-static-hosting-v1)
 
-# Before you begin  
+## Before you begin  
 
 I wanted to emphasize the following, If you come from an agile background (who ain't eh?) say these are our user stories
 
@@ -26,11 +26,11 @@ I wanted to emphasize the following, If you come from an agile background (who a
 
 ![static hosting](https://bizkt.imgix.net/posts/static-hosting/aws-static-hsoting.png)
 
-# Setting things up
+## Setting things up
 
-Before we start we shall set up our terraform environment. In Terraform it is vital to maintain your state file secure. I personally prefer Terraform Cloud as the configuration is straightforward and we don’t need to worry about CI/CD (GitOps-like) setup.  
+Before we start we shall set up our terraform environment. In Terraform it is vital to maintain your state file secure. I personally prefer Terraform Cloud as the configuration is straightforward and we don't need to worry about CI/CD (GitOps-like) setup.  
 
-First, you will need to a create Terraform cloud account [here](https://app.terraform.io/public/signup/account) (it’s free). Then create a project and set up a workflow, at this point, you would need to have a GitHub account (or from any VCS provider) to maintain your infrastructure code. I am not going to show-how this, as this is very straightforward.
+First, you will need to a create Terraform cloud account [here](https://app.terraform.io/public/signup/account) (its free). Then create a project and set up a workflow, at this point, you would need to have a GitHub account (or from any VCS provider) to maintain your infrastructure code. I am not going to show-how this, as this is very straightforward.
 
 If you have set up your Terraform workspace correctly, you should be able to see a webhook configured in your GitHub account. If you are using a VCS other than GitHub you would need to set this webhook manually.  
 
@@ -64,7 +64,7 @@ provider "aws" {
 
 As we have set up our remote backend and conquered the provider configuration we can start writing our code.
 
-# S3 Buckets
+## S3 Buckets
 
 For this section please refer to the [s3.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/s3.tf).
 
@@ -136,11 +136,11 @@ There are a couple of things to note here,
 
 - **S3 bucket website configuration:** here we set the paths to our index document and error document. You can even pull this path out for and defined them as a variable.
 - **S3 bucket CORS configuration:** CORS configuration is a pretty generic one for our scenario.
-- **Block public access to the bucket:** we don’t want our bucket objects to be publicly available.
+- **Block public access to the bucket:** we don't want our bucket objects to be publicly available.
 - **Set Bucket Object ownership:** To avoid complications, we set the object ownership to bucket owner.
 - **S3 bucket policy:** here we are referring to the S3 bucket policy, which has been specified in data.tf.
 
-Let’s take a look at the policy document. See [data.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/data.tf)
+Let's take a look at the policy document. See [data.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/data.tf)
 
 ```hcl
 # S3 Bucket Policy to Associate with the S3 Bucket
@@ -217,17 +217,17 @@ resource "aws_cloudfront_origin_access_control" "blog_distribution_origin_access
 
 See [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
 
-# [CloudFront](https://github.com/krishanthisera/aws-static-hosting/blob/main/cloudfront.tf)
+## [CloudFront](https://github.com/krishanthisera/aws-static-hosting/blob/main/cloudfront.tf)
 
-_For this article, we shall keep the CloudFront configuration to a minimum. Let’s discover more when we configure the Lambda at edge functions._
+_For this article, we shall keep the CloudFront configuration to a minimum. Let's discover more when we configure the Lambda at edge functions._
 
-## aws_cloudfront_distribution
+### aws_cloudfront_distribution
 
 Here we specify the origin configurations, as most of them are self-explanatory I am not planning to go and explain each one of them. But I think we might need an explanation for SSL certification configuration and function association.
 
-### SSL configuration
+#### SSL configuration
 
-If we refer to the repository, my certificate set up is sort of a “Bring your own certificate”, but I have put together a configuration for Email or DNS challenge validation.
+If we refer to the repository, my certificate set up is sort of a "Bring your own certificate", but I have put together a configuration for Email or DNS challenge validation.
 
 Please refer to [acm.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/acm.tf). For Email validation use the following.
 
@@ -247,7 +247,7 @@ resource "aws_acm_certificate" "ssl_certificate" {
 }
 ```
 
-### Function association
+#### Function association
 
 If you see [src/astro.js](https://github.com/krishanthisera/aws-static-hosting/blob/main/src/astro.js), I have a little edge function there and it is self-explanatory. A little confession, my blog is using the Astro framework, so I grab the code to the edge function from the documentation [here](https://docs.astro.build/en/guides/deploy/aws/#cloudfront-functions-setup).
 
@@ -281,7 +281,7 @@ resource "aws_cloudfront_function" "astro_default_edge_function" {
 }
 ```
 
-# [IAM](https://github.com/krishanthisera/aws-static-hosting/blob/main/iam.tf)
+## [IAM](https://github.com/krishanthisera/aws-static-hosting/blob/main/iam.tf)
 
 During the deployment, the deployer user would need to:
 
@@ -392,14 +392,18 @@ data "aws_iam_policy_document" "allow_aws_s3_put" {
 
 As they are pretty generic, I am not going dig deep, but [here](https://github.com/krishanthisera/aws-static-hosting/blob/main/iam.tf) we are attaching those two policies, to the deployer group call `{var.domain_name}_deployment_group` and then create a user called `${var.domain_name}_deployer` and add it to the group.
 
-# Variables
+## Variables
 
 There are a couple of variables I have been using, In my case, I use [terraform.tfvars](https://github.com/krishanthisera/aws-static-hosting/blob/main/terraform.tfvars) file to set the bucket name and the domain name. As I am not super comfortable with sharing my AWS account ID, I have copied the certificate ARN from a previously created certificate and save it against  `TF_VAR_ssl_certificate_arn`.  You can configure these variables in Terraform Cloud.  
 
-⚠️ **Don’t forget to set your AWS access key pair.**
+⚠️ **Don't forget to set your AWS access key pair.**
 
 ![Terraform Vars](https://bizkt.imgix.net/posts/static-hosting/tfc_vars.jpg)
 
 Depending on your configuration, you may either use CLI to apply the Terraform plan or, execute the plan using Terraform cloud.
 
-Once, you’ve deployed the environment, you may need to manually create the IAM key pair using AWS Console, and use it in your CI/CD pipeline
+Once, you've deployed the environment, you may need to manually create the IAM key pair using AWS Console, and use it in your CI/CD pipeline
+
+## Conclusion  
+
+In this article we discussed setting up static hosting on AWS using CloudFront, S3, and Terraform. We covered essential steps from configuring S3 buckets to setting up CloudFront distributions and managing IAM roles for security. When you set up AWS static hosting, using this systematic guide will help make your infrastructure reliable, safe, and adaptable.
