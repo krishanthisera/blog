@@ -5,27 +5,62 @@ import HorizontalCard from "../components/HorizontalCard.astro";
 
 <BaseLayout title = "Projects" sideBarActiveItemID="projects">
   <div>
-    <div class="text-3xl w-full font-bold mb-5">Projects</div>
+    <div class="text-3xl w-full font-bold mb-5">Projects and Contributions</div>
   </div>
 
+  <HorizontalCard
+    title="AWS Lambda at Edge Functions"
+    img="https://bizkt.imgix.net/projects/lambda-at-edge.png"
+    desc="Terraform sub-module designed for use with the AWS Static Hosting module."
+    url="https://github.com/krishanthisera/aws-static-hosting"
+  />
   <HorizontalCard
     title="Repmgr Haproxy Daemon"
     img="https://bizkt.imgix.net/projects/golang.png"
     desc="Go-Lang Daemon to track Postgres switch-overs"
     url="https://github.com/krishanthisera/harepd"
   />
-  <div class="divider my-0"></div>
   <HorizontalCard
     title="Istio Certmanager POC"
-    img="https://bizkt.imgix.net/projects/istio.png"
+    img="https://bizkt.imgix.net/projects/istio-k8s.jpg"
     desc="POC implementation of Istio with Certmanager"
     url="https://github.com/krishanthisera/istio-certman-poc"
   />
-  <div class="divider my-0"></div>
   <HorizontalCard
     title="How to host a static website in AWS using Terraform"
     img="https://bizkt.imgix.net/projects/terraform.png"
-    desc="This repository contains a sample infrastructure as code (IaC) using Terraform to host a static website/blog. The primary use case of this setup is to host a static website using the Astro framework, though this is applicable for any static site."
+    desc="This repository contains a sample infrastructure as code (IaC) using Terraform to host a static website/blog."
     url="https://github.com/krishanthisera/aws-static-hosting"
+  />
+  <div class="divider my-0 font-bold mb-5">Community Contribution</div>
+  <HorizontalCard
+    title="Articles Published"
+    img="https://bizkt.imgix.net/projects/articles.png"
+    desc="Articles Published on dev.to"
+    url="https://dev.to/krishanthisera"
+  />
+  <HorizontalCard
+    title="CDK Deploy Pipe"
+    img="https://bizkt.imgix.net/projects/cdk-deploy-pipe.png"
+    desc="BitBucket pipe to deploy CDK Stacks"
+    url="https://github.com/aligent/cdk-deploy-pipe"
+  />
+  <HorizontalCard
+    title="Serverless Deploy Pipe"
+    img="https://bizkt.imgix.net/projects/serverless-deploy-pipe.png"
+    desc="BitBucket pipe to deploy Serverless Framework"
+    url="https://github.com/aligent/serverless-deploy-pipe"
+  />
+  <HorizontalCard
+      title="CDK Constructs"
+      img="https://bizkt.imgix.net/projects/aws-cdk.png"
+      desc="A set of General Purpose CDK Constructs"
+      url="https://github.com/aligent/cdk-constructs"
+  />
+  <HorizontalCard
+      title="CDK Stacks"
+      img="https://bizkt.imgix.net/projects/cdk-stacks.png"
+      desc="A set of General Purpose CDK Stacks"
+      url="https://github.com/aligent/cdk-stacks"
   />
 </BaseLayout>
