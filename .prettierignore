@@ -1,0 +1,7 @@
+*.md
+test/fixtures/**/*.astro
+**/dist
+pnpm-lock.yaml
+package-lock.json
+.github
+.changeset

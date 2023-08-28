@@ -9,7 +9,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier -w . --cache"
   },
   "dependencies": {
     "@astrojs/image": "^0.17.2",
@@ -23,6 +24,8 @@
     "sharp": "^0.32.1"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.9"
+    "@tailwindcss/typography": "^0.5.9",
+    "prettier": "^3.0.2",
+    "prettier-plugin-astro": "^0.12.0"
   }
 }
