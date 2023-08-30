@@ -17,7 +17,7 @@ This blog delves into the intricacies of DevOps, offering insights on workflow o
 1. Clone the repository:
 
   ```bash
-   git clone https://github.com/krishanthisera/aws-edge-functions
+   git clone https://github.com/krishanthisera/blog.git
 
   ```
 
@@ -34,7 +34,7 @@ This is a personal project, and contributions are currently not being accepted.
 
 ## Contact
 
-For any queries or feedback, feel free to connect on [LinkedIn](https://www.linkedin.com/in/krishan-thisera/).
+For any queries or feedback, feel free to create an issue [here](https://github.com/krishanthisera/blog/issues).
 
 ## Acknowledgments
 
