@@ -26,6 +26,26 @@ I wanted to emphasize the following, If you come from an agile background (who a
 
 ![static hosting](https://bizkt.imgix.net/posts/static-hosting/aws-static-hsoting.png)
 
+### Understanding CSR and SSR
+
+Before we jump into our Infrastructure setup, it's crucial to understand the two primary rendering methods for web applications:
+
+1. Client-Side Rendering (CSR)
+2. Server-Side Rendering (SSR).
+
+__Client-Side Rendering (CSR):__ In CSR, the browser is responsible for rendering the content. When a user accesses the website, they receive a minimal HTML file. The browser then fetches the JavaScript, which, when executed, populates the page with content. This method is popular with Single Page Applications (SPAs) and offers a smooth user experience, especially for dynamic content.
+
+__Server-Side Rendering (SSR):__ With SSR, the server processes the request, renders the full page, and then sends the complete HTML content to the browser. This method is beneficial for SEO as search engines can crawl the content directly without executing JavaScript. It also provides a faster initial page load.
+
+#### Factors to Consider When Choosing Between CSR and SSR
+
+1. __SEO Needs:__ If SEO is a priority, SSR might be more suitable as it ensures that search engines can easily index your content. *💡 In our second article, we will discuss how we can address this very issue.*
+2. __Performance:__ CSR might introduce a slight delay before the user sees the content, as the browser needs to download and execute the JavaScript. On the other hand, SSR provides content instantly but might be resource-intensive on the server side.
+3. __Development Complexity:__ CSR-based SPAs can be simpler to develop and deploy, especially when using modern frameworks. SSR might introduce additional complexities, especially when dealing with caching, state management, etc.
+4. __User Experience:__ For dynamic applications where content changes frequently based on user interactions, CSR can offer a more fluid experience.
+
+__Throughout this series, our primary focus is on applications that utilize Client-Side Rendering (CSR).__
+
 ## Setting things up
 
 Before we start we shall set up our terraform environment. In Terraform it is vital to maintain your state file secure. I personally prefer Terraform Cloud as the configuration is straightforward and we don't need to worry about CI/CD (GitOps-like) setup.  
@@ -134,11 +154,11 @@ resource "aws_s3_bucket_public_access_block" "assets_bucket_public_access" {
 
 There are a couple of things to note here,
 
-- **S3 bucket website configuration:** here we set the paths to our index document and error document. You can even pull this path out for and defined them as a variable.
-- **S3 bucket CORS configuration:** CORS configuration is a pretty generic one for our scenario.
-- **Block public access to the bucket:** we don't want our bucket objects to be publicly available.
-- **Set Bucket Object ownership:** To avoid complications, we set the object ownership to bucket owner.
-- **S3 bucket policy:** here we are referring to the S3 bucket policy, which has been specified in data.tf.
+- __S3 bucket website configuration:__ here we set the paths to our index document and error document. You can even pull this path out for and defined them as a variable.
+- __S3 bucket CORS configuration:__ CORS configuration is a pretty generic one for our scenario.
+- __Block public access to the bucket:__ we don't want our bucket objects to be publicly available.
+- __Set Bucket Object ownership:__ To avoid complications, we set the object ownership to bucket owner.
+- __S3 bucket policy:__ here we are referring to the S3 bucket policy, which has been specified in data.tf.
 
 Let's take a look at the policy document. See [data.tf](https://github.com/krishanthisera/aws-static-hosting/blob/main/data.tf)
 
@@ -219,7 +239,7 @@ See [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/pr
 
 ## [CloudFront](https://github.com/krishanthisera/aws-static-hosting/blob/main/cloudfront.tf)
 
-_For this article, we shall keep the CloudFront configuration to a minimum. Let's discover more when we configure the Lambda at edge functions._
+*For this article, we shall keep the CloudFront configuration to a minimum. Let's discover more when we configure the Lambda at edge functions.*
 
 ### aws_cloudfront_distribution
 
