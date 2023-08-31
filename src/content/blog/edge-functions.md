@@ -154,6 +154,22 @@ resource "null_resource" "build_edge_functions" {
 }
 ```
 
+__A Quick Note:__ For this setup, I'm leveraging a pipeline to deploy the infrastructure. I've chosen [Spacelift](https://spacelift.io/) for this purpose. If you've been following along from the previous article, you might recall the [GitHub repo](https://github.com/krishanthisera/aws-static-hosting) associated with Article 01. Within that repo, you'll find a [Dockerfile](https://github.com/krishanthisera/aws-static-hosting/blob/main/Dockerfile) 🤔.
+
+Why is this Dockerfile significant? Spacelift offers the capability to pair custom build environments with its runners. So, I've incorporated `Node.js` and `npm` into the runner's environment.
+
+```Dockerfile
+# https://github.com/krishanthisera/aws-static-hosting/blob/main/Dockerfile
+FROM public.ecr.aws/spacelift/runner-terraform:latest
+
+USER root
+
+# Install node and npm
+RUN apk add --update --no-cache nodejs npm
+
+USER spacelift
+```
+
 Now, we need to create a role and associate it with the Lambda function. This step enables us to utilize our Lambda functions as  Lambda@Edge functions:
 
 ```hcl
