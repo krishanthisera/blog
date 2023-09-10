@@ -7,5 +7,6 @@ export const SITE_DESCRIPTION = `Hey there! I'm Krishan, your friendly DevOps en
 export const PROF_LINKEDIN = "https://www.linkedin.com/in/krishan-thisera/";
 export const PROF_GITHUB = "https://www.github.com/krishanthisera";
 export const PROF_TWITTER = "https://twitter.com/Krisheeya";
+export const PROF_DEVTO = "https://dev.to/krishanthisera";
 
 export const IMAGE_CDN_PREFIX = "https://bizkt.imgix.net";
