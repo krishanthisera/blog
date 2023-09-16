@@ -158,7 +158,7 @@ __A Quick Note:__ For this setup, I'm leveraging a pipeline to deploy the infras
 
 Why is this Dockerfile significant? Spacelift offers the capability to pair custom build environments with its runners. So, I've incorporated `Node.js` and `npm` into the runner's environment.
 
-```Dockerfile
+```dockerfile
 # https://github.com/krishanthisera/aws-static-hosting/blob/main/Dockerfile
 FROM public.ecr.aws/spacelift/runner-terraform:latest
 
