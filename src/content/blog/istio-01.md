@@ -3,7 +3,6 @@ title: "Why should you consider to adopt Service Mesh"
 description: "This is a brief overview of why you should consider adopting Service Mesh with your existing Kubernetes cluster."
 pubDate: "Jan 18 2021"
 heroImage: 'https://bizkt.imgix.net/posts/istio-01/intro.jpeg'
-badge: "NEW"
 ---
 
 This is a brief overview of why you should consider adopting Service Mesh with your existing Kubernetes cluster.
