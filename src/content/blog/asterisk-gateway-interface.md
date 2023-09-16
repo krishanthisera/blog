@@ -2,8 +2,8 @@
 title: "Asterisk Gateway Interface"
 description: "In this article, we will discuss the basics of the Asterisk Gateway Interface (AGI)."
 pubDate: "Jan 12 2023"
-heroImage: 'https://bizkt.imgix.net/posts/edge-functions/edge-functions-banner.png'
-badge: "NEW"
+heroImage: 'https://bizkt.imgix.net/post/asterisk-gateway-interface/asterisk_gateway_interface.png'
+badge: "RETRO"
 ---
 
 > The content of this article is migrated from the old blog post, so the information might be subject to updates.
