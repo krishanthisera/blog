@@ -63,7 +63,7 @@ Now, let's examine our HAProxy configurations. The HAProxy configuration file co
 
 #### Global
 
-```conf
+```sh
 global
     log 127.0.0.1   local2
     maxconn 1024
@@ -85,7 +85,7 @@ global
 
 Let's focus on HAProxy's Default Configuration. In the default section, we set the default parameters for both frontend and backend sections.
 
-```conf
+```sh
 defaults
     log     global
     option  tcplog
@@ -112,7 +112,7 @@ Finally, the frontend and backend configurations
 
 In the frontend section, HAProxy receive the traffic, processes them, and forwards the traffic to the relevant backend. In the following frontend section, we will discuss how to read HTTP headers, process them with basic ACLs, and forward them to the corresponding backend sections.
 
-```conf
+```sh
 frontend http_handler
     bind *:80
     bind *:443 ssl crt /etc/haproxy/certs/hrms.itcstaging.com-0001.pem
@@ -138,7 +138,7 @@ frontend http_handler
 
 #### Backend
 
-```conf
+```sh
 backend be_london
     balance leastcon
     redirect scheme https if !{ ssl_fc }
@@ -193,7 +193,7 @@ firewall-cmd --reload
 
 ## Complete Configuration Sample
 
-```conf
+```sh
 global
     log 127.0.0.1   local2
     maxconn 1024
