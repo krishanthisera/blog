@@ -3,7 +3,6 @@ title: "AWS Static Hosting - Part 01: CloudFront, S3 and Terraform"
 description: "In this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure."
 pubDate: "Jan 12 2023"
 heroImage: 'https://bizkt.imgix.net/posts/static-hosting/static-hsoting.png'
-badge: "NEW"
 ---
 
 Depending on your requirement, There are many ways to host a website in a cloud environment. And tons of frameworks at you r disposal to get the website up and running. Here in this article, we will focus on how we can leverage AWS CloudFront and S3 to set up our static hosting infrastructure.  
