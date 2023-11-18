@@ -5,7 +5,7 @@ import HorizontalCard from "../components/HorizontalCard.astro";
 
 <BaseLayout title = "Projects" sideBarActiveItemID="projects">
   <div>
-    <div class="text-3xl w-full font-bold mb-5">Projects and Contributions</div>
+    <div class="text-3xl w-full font-bold mb-5">Projects</div>
   </div>
 
   <HorizontalCard
@@ -32,6 +32,13 @@ import HorizontalCard from "../components/HorizontalCard.astro";
     desc="This repository contains a sample infrastructure as code (IaC) using Terraform to host a static website/blog."
     url="https://github.com/krishanthisera/aws-static-hosting"
   />
+  <HorizontalCard
+  title="Grender"
+  img="https://bizkt.imgix.net/projects/go-gin.jpg"
+  desc="Grender is a web rendering service written in Go that leverages a headless Chrome browser to render and cache web pages. The application supports various backends, including AWS S3 and local file systems, for storing cached content."
+  url="https://github.com/krishanthisera/grender"
+  badge="New"
+/>
   <HorizontalCard
     title="The Blog"
     img="https://bizkt.imgix.net/projects/astro.png"
