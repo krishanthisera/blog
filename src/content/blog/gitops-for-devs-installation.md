@@ -52,6 +52,11 @@ minikube addons list | grep STATUS && minikube addons list | grep enabled && \
 echo '\n\n\033[4;33m Current status of Minikube \033[0m' && minikube status
 ```
 
+To install `kubectl` and `helm` please follow the respective official documentation.
+
+- `kubectl`: <https://kubernetes.io/docs/tasks/tools/#kubectl>
+- `helm`:  <https://helm.sh/docs/intro/install/>
+
 ## Install Argo CD
 
 Now if your `minikube` cluster is up and running you are ready to install the [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). GitOps controller in your cluster.
