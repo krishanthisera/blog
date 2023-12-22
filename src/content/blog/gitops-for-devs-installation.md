@@ -6,7 +6,7 @@ heroImage: 'https://bizkt.imgix.net/posts/gitopsfordevs/GitOps-for-devs.jpeg'
 badge: "New"
 ---
 
-GitOps is a hot topic in DevOps circles these days, and this article series aims to break down its core concepts starting from the basics. We'll kick things off by setting up ArgoCD a GitOps controller and deploying a sample application in this initial article. The following parts will dive deeper into configuration specifics.
+GitOps is a hot topic in DevOps circles these days, and this article series aims to break down its core concepts starting from the basics. We'll kick things off by setting up ArgoCD a GitOps operator and deploying a sample application in this initial article. The following parts will dive deeper into configuration specifics.
 
 ## GitOps 101
 
@@ -20,11 +20,53 @@ In the context of Kubernetes and microservices, GitOps serves as a model for man
 
 Now that we've covered the basics of GitOps, let's jump into the example. We'll deploy a simple application on Kubernetes using `minikube` to illustrate these concepts.
 
+### CI/CD Workflow
+
+There are primarily two workflows: pull-based and push-based.
+
+#### Push-based GitOps Workflow
+
+In a push-based GitOps workflow, the deployment and synchronization are initiated externally by a CI/CD system or an operator.
+
+![GitOps Push](https://bizkt.imgix.net/posts/gitopsfordevs/ARGO_GITOPS_PUSH.png)
+
+**Application Repo:** Contains the application source code, which is intended to package and later deploy.
+
+**Config Repo:** The desired state of the infrastructure and applications is defined in this Git repository, often through declarative configuration files like YAML.
+
+**GitOps Operator:** An external system, like a CI/CD tool, monitors the codebase and, upon changes, triggers the GitOps workflow.
+
+When changes are made to the Application repo, developers create a pull request or directly commit changes to the application repo, the CI/CD pipeline is triggered. In this context, a new container image(s) is pushed to the container registry.
+
+Afterwards, the image or image tag is updated in the config repo. _This could be a fully automated commit or a PR which intended to manually merge._
+
+The GitOps operator or tool pulls the latest configuration from the Git repository and deploys or updates the infrastructure and applications based on the new configuration. The operator continuously monitors the config repo for subsequent changes.
+
+#### Pull-based GitOps Workflow
+
+In a pull-based GitOps workflow, the deployment and synchronization of the infrastructure and applications are triggered by changes in the Git repository.
+
+![GitOps Pull](https://bizkt.imgix.net/posts/gitopsfordevs/ARGO_GITOPS_PULL.png)
+
+**Application Repo:** Contains the application source code, which is intended to package and later deploy.
+
+**Config Repo:** The desired state of the infrastructure and applications is defined in this repository, often through declarative configuration files like YAML.
+
+**GitOps Operator:** The GitOps operator or tool continuously monitors the Git repository for changes. This operator usually sits closely with infrastructure, in this case, deployed in a Kubernetes cluster.
+
+When changes are made to the Application repo, developers create a pull request or directly commit changes to the Application repo, the CI/CD pipeline is triggered. In this context, a new container image(s) is pushed to the container registry.
+
+Afterwards, the image or image tag is updated in the config repository. _This could be a fully automated commit or a PR which intended to manually merge._
+
+The GitOps operator detects the changes and pulls the latest configuration from the Git repository. The operator then deploys or updates the infrastructure and applications based on the new configuration in the Git repository.
+
+The GitOps operator continues to monitor the Git repository for any further changes, repeating the process when new updates are detected.
+
 ## Install minikube
 
 If you haven't installed Minikube already you can follow the official documentation [here](https://minikube.sigs.k8s.io/docs/start/)
 
-Or you can use below shell script to upgrade/install `minikube`, if you are a Linux user.  
+Or you can use below shell script to upgrade/install `minikube` if you are a Linux user.  
 
 ```bash
 #! /bin/sh
@@ -59,17 +101,17 @@ To install `kubectl` and `helm` please follow the respective official documentat
 
 ## Install Argo CD
 
-Now if your `minikube` cluster is up and running you are ready to install the [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). GitOps controller in your cluster.
+Now if your `minikube` cluster is up and running you are ready to install the [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). GitOps operator in your cluster.
 
 ArgoCD installation is straightforward.
 
-1. Create the namespace for the ArgoCD controller:
+1. Create the namespace for the ArgoCD operator:
 
 ```bash
 kubectl create namespace argocd
 ```
 
-2. Install the Controller and CRDs
+2. Install the Operator and CRDs
 
 ```bash
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
