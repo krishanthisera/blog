@@ -1,6 +1,6 @@
 ---
 title: "GitOps for Devs - Part 02: Navigating the Code"
-description: "In the part 02 of the GitOps for Devs article series, we will dive deeper into the code."
+description: "In part 02 of the GitOps for Devs article series, we will dive deeper into the code."
 pubDate: "Dec 31 2023"
 heroImage: 'https://bizkt.imgix.net/posts/gitopsfordevs/GitOps-for-devs-code.jpeg'
 badge: "New"
