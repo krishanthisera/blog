@@ -2,7 +2,7 @@
 title: "GitOps for Devs - Part 03: CI/CD"
 description: "In part 03 of the GitOps for Devs article series, we will discuss about CI/CD Implementation."
 pubDate: "Dec 31 2023"
-heroImage: 'https://bizkt.imgix.net/posts/gitopsfordevs/ARGO_CICD.jpeg'
+heroImage: 'https://bizkt.imgix.net/posts/gitopsfordev/ARGO_CICD_HERO.png'
 badge: "New"
 ---
 
