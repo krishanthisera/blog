@@ -9,6 +9,11 @@ Depending on your requirement, There are many ways to host a website in a cloud 
 
 I am planning to discuss the scenario using two articles. In this article,  we will focus primarily on infrastructure setup, and the second article would be dedicated to enhancing SEO, using Lambda at Edge functions.
 
+|           AWS Static Hosting (2 Part Series)            |
+|---|
+| [AWS Static Hosting - Part 01: CloudFront, S3 and Terraform](./static-hosting-aws) |
+| [AWS Static Hosting - Part 02: CloudFront Edge Functions](./edge-functions)     |
+
 The source code for this article is available [here](https://github.com/krishanthisera/aws-static-hosting/tree/aws-static-hosting-v1)
 
 ## Before you begin  
@@ -426,3 +431,8 @@ Once, you've deployed the environment, you may need to manually create the IAM k
 ## Conclusion  
 
 In this article we discussed setting up static hosting on AWS using CloudFront, S3, and Terraform. We covered essential steps from configuring S3 buckets to setting up CloudFront distributions and managing IAM roles for security. When you set up AWS static hosting, using this systematic guide will help make your infrastructure reliable, safe, and adaptable.
+
+|           AWS Static Hosting (2 Part Series)            |
+|---|
+| [AWS Static Hosting - Part 01: CloudFront, S3 and Terraform](./static-hosting-aws) |
+| [AWS Static Hosting - Part 02: CloudFront Edge Functions](./edge-functions)     |

@@ -3,10 +3,14 @@ title: "AWS Static Hosting - Part 02: CloudFront Edge Functions"
 description: "In this article, we will focus on how we can leverage Lambda@Edge functions to make our site SEO-friendly."
 pubDate: "Jan 12 2023"
 heroImage: 'https://bizkt.imgix.net/posts/edge-functions/edge-functions-banner.png'
-badge: "NEW"
 ---
 
 In the previous article we discuss how we can put together AWS CloudFront, S3 bucket and other associated services using Terraform to host our static website. We now need to make our site SEO-friendly, especially if it contains dynamic content.  
+
+|           AWS Static Hosting (2 Part Series)            |
+|---|
+| [AWS Static Hosting - Part 01: CloudFront, S3 and Terraform](./static-hosting-aws) |
+| [AWS Static Hosting - Part 02: CloudFront Edge Functions](./edge-functions)     |
 
 Before we get started, let's discuss some theory.
 
@@ -554,3 +558,8 @@ It's crucial to understand that regardless of the origin/source (S3 or Prerender
 ## Wrapping it UP
 
 We've discussed how to use AWS CloudFront edge functions and S3 for our static hosting needs.  Our main goal? Boosting our site's SEO prowess. We broke down how web crawlers work, comparing it to the usual browser requests. Digging deeper, we discuss the foundation of our solution. In short, this article offers a roadmap for those wanting to optimize their static sites using AWS tools.
+
+|           AWS Static Hosting (2 Part Series)            |
+|---|
+| [AWS Static Hosting - Part 01: CloudFront, S3 and Terraform](./static-hosting-aws) |
+| [AWS Static Hosting - Part 02: CloudFront Edge Functions](./edge-functions)     |
