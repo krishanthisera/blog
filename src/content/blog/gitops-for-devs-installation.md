@@ -6,7 +6,14 @@ heroImage: 'https://bizkt.imgix.net/posts/gitopsfordevs/GitOps-for-devs.jpeg'
 badge: "New"
 ---
 
+
 GitOps is a hot topic in DevOps circles these days, and this article series aims to break down its core concepts starting from the basics. We'll kick things off by setting up ArgoCD a GitOps operator and deploying a sample application in this initial article. The following parts will dive deeper into configuration specifics.
+
+|           GitOps for Devs (3 Part Series)            |
+|---|
+| [GitOps for Devs - Part 01: Installation](./gitops-for-devs-installation) |
+| [GitOps for Devs - Part 2: Navigating the Code](./gitops-for-devs-the-code)     |
+| [GitOps for Devs - Part 03: CI/CD](./gitops-for-devs-ci-cd)  |
 
 ## GitOps 101
 
@@ -36,11 +43,11 @@ In a push-based GitOps workflow, the deployment and synchronization are initiate
 
 **GitOps Operator:** An external system, like a CI/CD tool, monitors the codebase and, upon changes, triggers the GitOps workflow.
 
-When changes are made to the Application repo, developers create a pull request or directly commit changes to the application repo, the CI/CD pipeline is triggered. In this context, a new container image(s) is pushed to the container registry.
+Developers make changes to the Application Repo, either by creating pull requests or directly committing alterations to the codebase. As a result, a CI/CD pipeline is triggered, initiating the creation and pushing of new container images to the container registry.
 
-Afterwards, the image or image tag is updated in the config repo. _This could be a fully automated commit or a PR which intended to manually merge._
+Subsequently, these newly generated images or their tags are updated in the Config Repo. This step could be executed through an automated commit or by means of a pull request intended for manual merging.
 
-The GitOps operator or tool pulls the latest configuration from the Git repository and deploys or updates the infrastructure and applications based on the new configuration. The operator continuously monitors the config repo for subsequent changes.
+The GitOps operator, an external system like a CI/CD tool, closely monitors the codebase for any changes. Once alterations to the Config Repo are detected, the GitOps operator pulls the most recent configuration from the repository. It then proceeds to deploy or update the infrastructure and applications based on this updated configuration. This process is continuous, as the operator consistently monitors the Config Repo for any further changes, ready to repeat the deployment cycle when new updates are detected.
 
 #### Pull-based GitOps Workflow
 
@@ -48,19 +55,17 @@ In a pull-based GitOps workflow, the deployment and synchronization of the infra
 
 ![GitOps Pull](https://bizkt.imgix.net/posts/gitopsfordevs/ARGO_GITOPS_PULL.png)
 
-**Application Repo:** Contains the application source code, which is intended to package and later deploy.
-
-**Config Repo:** The desired state of the infrastructure and applications is defined in this repository, often through declarative configuration files like YAML.
+Similar to the push-based workflow, there are two primary repositories: the **Application Repo** and the **Config Repo**.
 
 **GitOps Operator:** The GitOps operator or tool continuously monitors the Git repository for changes. This operator usually sits closely with infrastructure, in this case, deployed in a Kubernetes cluster.
 
-When changes are made to the Application repo, developers create a pull request or directly commit changes to the Application repo, the CI/CD pipeline is triggered. In this context, a new container image(s) is pushed to the container registry.
+Developers, again, make changes to the **Application Repo**, either by creating pull requests or directly committing changes to the codebase. This triggers a CI/CD pipeline, resulting in the creation and pushing of new container images to the container registry.
 
-Afterwards, the image or image tag is updated in the config repository. _This could be a fully automated commit or a PR which intended to manually merge._
+Following this, the updated image or its tag is modified in the Config Repo, either through an automated commit or a pull request for manual merging.
 
-The GitOps operator detects the changes and pulls the latest configuration from the Git repository. The operator then deploys or updates the infrastructure and applications based on the new configuration in the Git repository.
+However, the GitOps operator's role is distinct in this workflow. Instead of external initiation, the GitOps operator constantly monitors the Config Repo for any changes. As soon as changes are detected, the operator pulls the latest configuration from the repository and proceeds to deploy or update the infrastructure and applications based on this revised configuration.
 
-The GitOps operator continues to monitor the Git repository for any further changes, repeating the process when new updates are detected.
+Similar to the push-based workflow, this process remains continuous, with the GitOps operator continuously monitoring the Config Repo for any subsequent changes, ready to redeploy or update as needed.
 
 ## Install minikube
 
@@ -221,7 +226,7 @@ ArgoCD has its own CLI as well, follow [this](https://argo-cd.readthedocs.io/en/
 For this tutorial, I am using two repos:
 
 - **Config**: <https://github.com/krishanthisera/album-app-config>
-- **Application**:  <https://github.com/krishanthisera/album-app-config>
+- **Application**:  <https://github.com/krishanthisera/album-app>
 
 As the names suggest, the config repo contains the infrastructure configuration, in this case, helm charts, while the application repo contains the code for **frontend** and **backend**.
 
@@ -317,3 +322,9 @@ Forwarding from [::1]:8090 -> 3000
 Now that we have installed the Album App, let's dive deep into the ArgoCD-specific configuration.
 
 Stay tuned. To be continued...
+
+|           GitOps for Devs (3 Part Series)            |
+|---|
+| [GitOps for Devs - Part 01: Installation](./gitops-for-devs-installation) |
+| [GitOps for Devs - Part 2: Navigating the Code](./gitops-for-devs-the-code)     |
+| [GitOps for Devs - Part 03: CI/CD](./gitops-for-devs-ci-cd)  |

@@ -5,7 +5,17 @@ pubDate: "Dec 31 2023"
 heroImage: 'https://bizkt.imgix.net/posts/gitopsfordevs/GitOps-for-devs-code.jpeg'
 badge: "New"
 ---
-We're continuing our exploration of GitOps with ArgoCD. In the first part, we got a grasp of GitOps basics and set up an example app called Album-App. Now, let's explore the repositories that drive this application:
+
+
+We're continuing our exploration of GitOps with ArgoCD. In the first part, we got a grasp of GitOps basics and set up an example app called Album-App.
+
+|           GitOps for Devs (3 Part Series)            |
+|---|
+| [GitOps for Devs - Part 01: Installation](./gitops-for-devs-installation) |
+| [GitOps for Devs - Part 2: Navigating the Code](./gitops-for-devs-the-code)     |
+| [GitOps for Devs - Part 03: CI/CD](./gitops-for-devs-ci-cd)  |
+
+Now, let's explore the repositories that drive this application:
 
 ## The Two Repositories
 
@@ -167,7 +177,7 @@ The frontend and backend ArgoCD Application resources point to their respective 
 
 ## Frontend and Backend Helm Charts
 
-These Helm charts define how the frontend and backend applications will be deployed on Kubernetes. They contain configuration details encapsulated within `values.yaml` files.
+These Helm charts define how the frontend and backend applications will be deployed on Kubernetes. They contain configuration details encapsulated within `values.yaml`. files.
 
 ```yaml
 replicaCount: 1
@@ -177,7 +187,6 @@ image:
   pullPolicy: IfNotPresent
   tag: "v1.3.2" # Important: This tag signifies the version of the backend application.
   containerPort: 8080
-
 
 service: 
   name: album-app-backend
@@ -193,3 +202,9 @@ During the release process of the application, the `tag` value will be replaced 
 Part 3 of the article series will cover the release process including CI/CD pipelines.
 
 Stay tuned!
+
+|           GitOps for Devs (3 Part Series)            |
+|---|
+| [GitOps for Devs - Part 01: Installation](./gitops-for-devs-installation) |
+| [GitOps for Devs - Part 2: Navigating the Code](./gitops-for-devs-the-code)     |
+| [GitOps for Devs - Part 03: CI/CD](./gitops-for-devs-ci-cd)  |
